@@ -11,7 +11,7 @@ This repository is split into two apps and support docs:
 - Backend setup:
   - `cd backend && python -m venv venv && venv\Scripts\activate && pip install -r requirements.txt`
 - Backend run:
-  - `cd backend && uvicorn app.main:app --reload --port 8000`
+  - `cd backend && uvicorn app.main:app --reload --port 8001`
 - Frontend setup/run:
   - `cd frontend && npm install && npm run dev`
 - Frontend build:
@@ -39,4 +39,4 @@ This repository is split into two apps and support docs:
 
 ## Security & Configuration Tips
 - Do not commit secrets. Keep API keys in `backend/.env` (for example, `DEEPSEEK_API_KEY`).
-- Validate changes via `http://localhost:8000/docs` and confirm frontend-backend connectivity before opening a PR.
+- Validate changes via `http://localhost:8001/docs` and confirm frontend-backend connectivity before opening a PR.

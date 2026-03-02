@@ -60,10 +60,10 @@ def get_vector_store(settings: Settings = Depends(get_settings)):
     """获取向量存储实例"""
     global _vector_store
     if _vector_store is None:
-        if not settings.dashscope_api_key:
+        if not settings.dashscope_api_key and not settings.siliconflow_api_key:
             raise HTTPException(
                 status_code=500,
-                detail="未配置 DASHSCOPE_API_KEY，无法使用向量存储功能"
+                detail="未配置 DASHSCOPE_API_KEY 或 SILICONFLOW_API_KEY，无法使用向量存储功能"
             )
 
         # 根据配置选择向量存储后端
@@ -101,19 +101,19 @@ def get_qa_agent(settings: Settings = Depends(get_settings)):
     global _qa_agent, _vector_store
     if _qa_agent is None:
         from app.services.qa_agent import QAAgent
-        if settings.deepseek_api_key:
+        if settings.llm_api_key:
             # 确保向量存储已初始化
             vs = get_vector_store(settings)
             _qa_agent = QAAgent(
                 vector_store=vs,
-                model=settings.default_model,
-                api_key=settings.deepseek_api_key,
-                base_url=settings.deepseek_base_url,
+                model=settings.llm_text_model,
+                api_key=settings.llm_api_key,
+                base_url=settings.llm_base_url,
             )
         else:
             raise HTTPException(
                 status_code=500,
-                detail="未配置 DEEPSEEK_API_KEY，无法使用 QA 功能"
+                detail="未配置 SILICONFLOW_API_KEY 或 DEEPSEEK_API_KEY，无法使用 QA 功能"
             )
     return _qa_agent
 

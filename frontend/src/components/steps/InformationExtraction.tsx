@@ -314,6 +314,24 @@ export function InformationExtraction({ onNext, onPrevious, selectedDocument }: 
       '蛋白质': { bg: 'from-blue-50 to-blue-100', border: 'border-blue-300', text: 'text-blue-700', highlight: 'bg-blue-200', highlightColor: 'rgba(191, 219, 254, 0.8)' },
       '研究方法': { bg: 'from-slate-50 to-slate-100', border: 'border-slate-300', text: 'text-slate-700', highlight: 'bg-slate-200', highlightColor: 'rgba(226, 232, 240, 0.8)' },
       '实验技术': { bg: 'from-gray-50 to-gray-100', border: 'border-gray-300', text: 'text-gray-700', highlight: 'bg-gray-300', highlightColor: 'rgba(209, 213, 219, 0.8)' },
+
+      // 教学导学相关
+      '章节': { bg: 'from-indigo-50 to-indigo-100', border: 'border-indigo-300', text: 'text-indigo-700', highlight: 'bg-indigo-200', highlightColor: 'rgba(199, 210, 254, 0.8)' },
+      '概念': { bg: 'from-blue-50 to-cyan-100', border: 'border-cyan-300', text: 'text-cyan-700', highlight: 'bg-cyan-200', highlightColor: 'rgba(165, 243, 252, 0.8)' },
+      '定理': { bg: 'from-violet-50 to-violet-100', border: 'border-violet-300', text: 'text-violet-700', highlight: 'bg-violet-200', highlightColor: 'rgba(221, 214, 254, 0.8)' },
+      '公式': { bg: 'from-sky-50 to-blue-100', border: 'border-sky-300', text: 'text-sky-700', highlight: 'bg-sky-200', highlightColor: 'rgba(186, 230, 253, 0.8)' },
+      '适用条件': { bg: 'from-emerald-50 to-green-100', border: 'border-emerald-300', text: 'text-emerald-700', highlight: 'bg-emerald-200', highlightColor: 'rgba(167, 243, 208, 0.8)' },
+      '结论': { bg: 'from-amber-50 to-yellow-100', border: 'border-amber-300', text: 'text-amber-700', highlight: 'bg-amber-200', highlightColor: 'rgba(253, 230, 138, 0.8)' },
+      '已知条件': { bg: 'from-slate-50 to-slate-100', border: 'border-slate-300', text: 'text-slate-700', highlight: 'bg-slate-200', highlightColor: 'rgba(226, 232, 240, 0.8)' },
+      '目标': { bg: 'from-fuchsia-50 to-purple-100', border: 'border-fuchsia-300', text: 'text-fuchsia-700', highlight: 'bg-fuchsia-200', highlightColor: 'rgba(245, 208, 254, 0.8)' },
+      '约束条件': { bg: 'from-lime-50 to-lime-100', border: 'border-lime-300', text: 'text-lime-700', highlight: 'bg-lime-200', highlightColor: 'rgba(217, 249, 157, 0.8)' },
+      '中间推导': { bg: 'from-orange-50 to-amber-100', border: 'border-orange-300', text: 'text-orange-700', highlight: 'bg-orange-200', highlightColor: 'rgba(254, 215, 170, 0.8)' },
+      '学习目标': { bg: 'from-teal-50 to-emerald-100', border: 'border-teal-300', text: 'text-teal-700', highlight: 'bg-teal-200', highlightColor: 'rgba(153, 246, 228, 0.8)' },
+      '错误类型': { bg: 'from-red-50 to-rose-100', border: 'border-red-300', text: 'text-red-700', highlight: 'bg-red-200', highlightColor: 'rgba(254, 202, 202, 0.8)' },
+      '错误归因': { bg: 'from-rose-50 to-pink-100', border: 'border-rose-300', text: 'text-rose-700', highlight: 'bg-rose-200', highlightColor: 'rgba(254, 205, 211, 0.8)' },
+      '纠正策略': { bg: 'from-green-50 to-emerald-100', border: 'border-green-300', text: 'text-green-700', highlight: 'bg-green-200', highlightColor: 'rgba(187, 247, 208, 0.8)' },
+      '掌握度变化': { bg: 'from-yellow-50 to-amber-100', border: 'border-yellow-300', text: 'text-yellow-700', highlight: 'bg-yellow-200', highlightColor: 'rgba(254, 240, 138, 0.8)' },
+      '下一步计划': { bg: 'from-blue-50 to-indigo-100', border: 'border-blue-300', text: 'text-blue-700', highlight: 'bg-blue-200', highlightColor: 'rgba(191, 219, 254, 0.8)' },
     };
     return colorMap[type] || { bg: 'from-gray-50 to-gray-100', border: 'border-gray-300', text: 'text-gray-700', highlight: 'bg-gray-200', highlightColor: 'rgba(229, 231, 235, 0.8)' };
   };
@@ -324,6 +342,9 @@ export function InformationExtraction({ onNext, onPrevious, selectedDocument }: 
       '日期': '📅', '时间': '📅', '金额': '💰', '数量': '🔢', '时长': '⏱️',
       '病症': '🩺', '药物': '💊', '测量值': '📊', '百分比': '📈', '物种': '🐟',
       '手术': '⚕️', '产品': '📦', '事件': '📋',
+      '章节': '📘', '概念': '💡', '定理': '📚', '公式': '📐', '适用条件': '✅', '结论': '🏁',
+      '已知条件': '📥', '目标': '🎯', '约束条件': '🧩', '中间推导': '🧮',
+      '学习目标': '🗺️', '错误类型': '❗', '错误归因': '🔍', '纠正策略': '🛠️', '掌握度变化': '📈', '下一步计划': '📅',
     };
     return icons[type] || '📌';
   };

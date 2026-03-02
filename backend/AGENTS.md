@@ -15,7 +15,7 @@ Configuration is defined in `app/config.py`; environment defaults are in `.env.e
 ## Build, Test, and Development Commands
 - `python -m venv .venv` then `.\.venv\Scripts\Activate.ps1`: create/activate local virtualenv (Windows).
 - `pip install -r requirements.txt`: install backend dependencies.
-- `uvicorn app.main:app --reload --port 8000`: run API locally with auto-reload.
+- `uvicorn app.main:app --reload --port 8001`: run API locally with auto-reload.
 - `pytest -q`: run tests (add tests first if none exist yet).
 - From repository root: `docker compose up --build`: start backend + frontend containers.
 

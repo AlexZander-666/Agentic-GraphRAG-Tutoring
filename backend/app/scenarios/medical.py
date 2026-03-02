@@ -1,4 +1,4 @@
-"""中医药多组学机制信息提取场景"""
+"""学习日志提取场景"""
 
 import textwrap
 from typing import Dict, List
@@ -9,61 +9,37 @@ from app.scenarios.base import BaseScenario
 
 
 class MedicalScenario(BaseScenario):
-    """
-    中医药多组学 / 机制研究信息提取场景
-    （适用于综述论文、基础研究、机制研究文本）
-    """
+    """学习日志提取场景（保留 medical 场景 ID 以兼容现有接口）"""
 
-    name = "中医药机制研究"
-    description = (
-        "从中医药与疾病机制研究文本中提取可用于构建知识图谱的结构化信息，"
-        "包括中药/成分、分子靶点、信号通路、细胞类型、生物过程、疾病及组学证据等"
-    )
-
-    # 🔑 GraphRAG 友好的实体类型
-    extract_classes = [
-        "中药",
-        "活性成分",
-        "基因",
-        "蛋白",
-        "非编码RNA",
-        "信号通路",
-        "细胞类型",
-        "生物过程",
-        "表型",
-        "疾病",
-        "组学类型",
-        "实验模型",
-    ]
+    name = "学习日志"
+    description = "从学生反思、错题复盘和学习记录中提取错误归因与纠正策略，支撑教学导学追踪"
+    extract_classes = ["学习目标", "错误类型", "错误归因", "纠正策略", "掌握度变化", "下一步计划", "证据片段"]
 
     def get_prompt(self) -> str:
         return textwrap.dedent("""\
-            从中医药与疾病机制研究文本中提取可用于构建知识图谱的实体信息。
+            从学习日志文本中提取以下信息:
 
-            重点关注以下机制链路中的实体：
-            - 中药 / 方剂 / 药对
-            - 活性成分
-            - 分子靶点（基因、蛋白、miRNA、circRNA 等）
-            - 信号通路（如 TGF-β/Smad、PI3K/Akt、PPAR、AMPK 等）
-            - 作用的细胞类型（如 HSC、巨噬细胞等）
-            - 生物过程或表型（如 HSC 活化、凋亡、铁死亡、自噬）
-            - 疾病或病理状态
-            - 组学类型（转录组、蛋白质组、代谢组等）
-            - 实验模型（如 CCl4 诱导模型、小鼠模型等）
+            - 学习目标: 本次学习或复盘目标
+            - 错误类型: 计算错误、概念混淆、条件遗漏等
+            - 错误归因: 导致错误的原因描述
+            - 纠正策略: 学生采取或计划采取的改进方法
+            - 掌握度变化: 对知识掌握情况的变化描述
+            - 下一步计划: 后续学习安排
+            - 证据片段: 支撑以上结论的原文语句
 
-            要求：
-            1. extraction_text 必须是原文中的精确子串，不得改写或总结
-            2. 使用 mechanism_group 属性将同一机制链路中的实体进行关联
-            3. 同一实体可参与多个 mechanism_group
-            4. 不推断、不补充原文未明确出现的信息
-            5. 按实体在文本中出现的顺序进行抽取
-            """
-        )
+            要求:
+            1. extraction_text 必须为原文精确子串，不得改写
+            2. 不推断学生未明确表达的内容
+            3. 保留原始量化描述（如“正确率从 60% 提升到 85%”）
+            4. 按原文顺序抽取，避免重复
+            5. 纠正策略尽量附带时间或执行频率属性（若原文包含）
+            """)
 
     def get_examples(self) -> List[lx.data.ExampleData]:
         example_text = (
-            "研究表明，三七皂苷R1可通过激活PPAR-γ信号通路，"
-            "抑制TGF-β1诱导的肝星状细胞活化，从而减轻CCl4诱导的小鼠肝纤维化。"
+            "本周目标是掌握节点电压法。错题中我经常遗漏参考方向，导致符号错误。"
+            "我计划每天完成 5 道节点方程练习，并在解题后逐步检查方向假设。"
+            "目前正确率从 62% 提升到 81%。"
         )
 
         return [
@@ -71,39 +47,29 @@ class MedicalScenario(BaseScenario):
                 text=example_text,
                 extractions=[
                     lx.data.Extraction(
-                        extraction_class="活性成分",
-                        extraction_text="三七皂苷R1",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
+                        extraction_class="学习目标",
+                        extraction_text="掌握节点电压法",
+                        attributes={"周期": "本周"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="信号通路",
-                        extraction_text="PPAR-γ信号通路",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
+                        extraction_class="错误类型",
+                        extraction_text="符号错误",
+                        attributes={"场景": "节点方程"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="蛋白",
-                        extraction_text="TGF-β1",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
+                        extraction_class="错误归因",
+                        extraction_text="遗漏参考方向",
+                        attributes={"影响": "导致符号错误"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="细胞类型",
-                        extraction_text="肝星状细胞",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
+                        extraction_class="纠正策略",
+                        extraction_text="每天完成 5 道节点方程练习",
+                        attributes={"频率": "每天"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="生物过程",
-                        extraction_text="肝星状细胞活化",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="疾病",
-                        extraction_text="肝纤维化",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="实验模型",
-                        extraction_text="CCl4诱导的小鼠",
-                        attributes={"mechanism_group": "三七皂苷R1-PPARγ-HSC"}
+                        extraction_class="掌握度变化",
+                        extraction_text="正确率从 62% 提升到 81%",
+                        attributes={"指标": "正确率"}
                     ),
                 ]
             )
@@ -112,12 +78,31 @@ class MedicalScenario(BaseScenario):
     def get_samples(self) -> List[Dict[str, str]]:
         return [
             {
-                "id": "mechanism_sample_1",
-                "title": "中医药抗肝纤维化机制研究",
-                "text": (
-                    "多项研究表明，中药复方及其活性成分可通过调控TGF-β/Smad、"
-                    "PI3K/Akt等信号通路，抑制肝星状细胞活化，促进细胞凋亡或铁死亡，"
-                    "从而改善肝纤维化进程。转录组和蛋白质组学研究为上述机制提供了分子证据。"
-                )
+                "id": "learning_log_sample_1",
+                "title": "电路课程错题复盘",
+                "text": textwrap.dedent("""\
+                    本周学习目标：熟练使用戴维宁等效与叠加定理。
+                    在三道综合题中，我有两次忽略了“线性网络”这个适用条件，导致结论虽然数值接近但逻辑错误。
+
+                    错误归因：做题时急于代公式，没有先检查题目约束条件。
+                    纠正策略：每次解题前先写“已知-求解-约束”三行清单；每天晚自习复盘 20 分钟。
+
+                    掌握度变化：本周章节测验从 68 分提升到 84 分。
+                    下一步计划：补做 6 道含受控源的等效变换题，并在周五前完成总结。
+                    """).strip()
+            },
+            {
+                "id": "learning_log_sample_2",
+                "title": "控制系统学习反思",
+                "text": textwrap.dedent("""\
+                    我这周重点复习了劳斯判据和根轨迹法。
+                    主要错误类型是“判据表首列符号变化数统计错误”和“根轨迹起止点判断混淆”。
+
+                    错误归因是对步骤记忆化，缺少对定义的理解。
+                    纠正策略：按步骤口述每一行推导原因，并和同学互查作业。
+
+                    目前稳态误差相关题正确率由 55% 提升到 79%。
+                    下周计划是完成一次 90 分钟限时训练，并把错因归档到错题本。
+                    """).strip()
             }
         ]

@@ -1,4 +1,4 @@
-"""药物信息提取场景"""
+"""实验报告提取场景"""
 
 import textwrap
 from typing import Dict, List
@@ -9,65 +9,60 @@ from app.scenarios.base import BaseScenario
 
 
 class MedicationScenario(BaseScenario):
-    """药物信息提取场景"""
+    """实验报告提取场景（保留 medication 场景 ID 以兼容现有接口）"""
 
-    name = "药物信息"
-    description = "从病历或处方中提取药物相关信息，包括药物名称、剂量、用法、频率、适应症等"
-    extract_classes = ["药物", "剂量", "用法", "频率", "疗程", "适应症"]
+    name = "实验报告"
+    description = "从实验指导书和实验报告中提取实验目的、条件、步骤与结论，服务教学导学和可追溯验证"
+    extract_classes = ["实验目的", "实验条件", "仪器参数", "实验步骤", "观测结果", "误差分析", "结论"]
 
     def get_prompt(self) -> str:
         return textwrap.dedent("""\
-            从医疗文本中提取药物处方信息:
+            从实验文本中提取以下信息:
 
-            - 药物: 药物名称
-            - 剂量: 用药剂量 (如 100mg, 0.5g)
-            - 用法: 给药途径 (如 口服、静脉注射)
-            - 频率: 用药频率 (如 每日3次、每8小时一次)
-            - 疗程: 用药时长 (如 连续5天、长期服用)
-            - 适应症: 用药目的或治疗的疾病
+            - 实验目的: 本实验要验证或测量的对象
+            - 实验条件: 环境、先验假设、操作约束
+            - 仪器参数: 仪器型号、量程、精度等
+            - 实验步骤: 操作流程
+            - 观测结果: 原始数据或现象描述
+            - 误差分析: 偏差来源与影响
+            - 结论: 实验结论及是否达到目标
 
             要求:
-            1. extraction_text 必须是原文的精确子串
-            2. 使用 medication_group 属性将同一药物的信息关联
-            3. 按在文本中出现的顺序提取
+            1. extraction_text 必须为原文精确子串，不得改写
+            2. 参数与单位原样保留
+            3. 按步骤先后顺序抽取
+            4. 误差分析不得推断原文未出现内容
             """)
 
     def get_examples(self) -> List[lx.data.ExampleData]:
-        example_text = "患者服用阿司匹林肠溶片100mg，每日1次，口服，长期服用，用于预防心血管疾病。"
+        example_text = (
+            "实验目的：测量 RC 电路时间常数。仪器为示波器，采样率 1MS/s。"
+            "步骤：输入阶跃信号并记录电容电压上升曲线。结论：测得 τ≈0.098s。"
+        )
 
         return [
             lx.data.ExampleData(
                 text=example_text,
                 extractions=[
                     lx.data.Extraction(
-                        extraction_class="药物",
-                        extraction_text="阿司匹林肠溶片",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
+                        extraction_class="实验目的",
+                        extraction_text="测量 RC 电路时间常数",
+                        attributes={"课程": "电路实验"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="剂量",
-                        extraction_text="100mg",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
+                        extraction_class="仪器参数",
+                        extraction_text="采样率 1MS/s",
+                        attributes={"仪器": "示波器"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="频率",
-                        extraction_text="每日1次",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
+                        extraction_class="实验步骤",
+                        extraction_text="输入阶跃信号并记录电容电压上升曲线",
+                        attributes={"序号": "1"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="用法",
-                        extraction_text="口服",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="疗程",
-                        extraction_text="长期服用",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="适应症",
-                        extraction_text="预防心血管疾病",
-                        attributes={"medication_group": "阿司匹林肠溶片"}
+                        extraction_class="结论",
+                        extraction_text="测得 τ≈0.098s",
+                        attributes={"单位": "s"}
                     ),
                 ]
             )
@@ -76,38 +71,32 @@ class MedicationScenario(BaseScenario):
     def get_samples(self) -> List[Dict[str, str]]:
         return [
             {
-                "id": "med_sample_1",
-                "title": "心内科出院医嘱",
+                "id": "lab_sample_1",
+                "title": "RC 暂态响应实验",
                 "text": textwrap.dedent("""\
-                    出院医嘱
+                    实验目的：验证一阶 RC 电路充电过程，并估计时间常数。
+                    实验条件：室温 25°C，电源电压 5V，初始电容电压为 0V。
+                    仪器参数：示波器量程 10V/div，采样率 2MS/s。
 
-                    诊断: 1. 不稳定型心绞痛  2. 高血压病3级 极高危  3. 2型糖尿病
+                    实验步骤：
+                    1. 按电路图连接 R=2kΩ、C=47μF；
+                    2. 输入方波激励并捕获上升沿；
+                    3. 记录 63.2% 电压对应时刻。
 
-                    出院带药:
-                    1. 阿司匹林肠溶片 100mg 口服 每日1次 长期服用，用于抗血小板聚集
-                    2. 阿托伐他汀钙片 20mg 口服 每晚1次 长期服用，用于调脂稳定斑块
-                    3. 美托洛尔缓释片 47.5mg 口服 每日1次，用于控制心率
-                    4. 厄贝沙坦片 150mg 口服 每日1次，用于降压治疗
-                    5. 二甲双胍缓释片 500mg 口服 每日2次 餐时服用，用于控制血糖
-                    6. 单硝酸异山梨酯缓释片 50mg 口服 每日1次，用于缓解心绞痛
-
-                    注意事项: 按时服药，定期复查，如有不适及时就诊。
+                    观测结果：63.2% 电压点出现在 0.095s 左右。
+                    误差分析：导线接触电阻与示波器读数分辨率引入约 3% 偏差。
+                    结论：测得时间常数与理论值基本一致。
                     """).strip()
             },
             {
-                "id": "med_sample_2",
-                "title": "感染科处方",
+                "id": "lab_sample_2",
+                "title": "控制系统阶跃响应实验",
                 "text": textwrap.dedent("""\
-                    处方
-
-                    诊断: 社区获得性肺炎
-
-                    1. 头孢曲松钠 2g 静脉滴注 每日1次 连续使用5-7天
-                    2. 阿奇霉素片 500mg 口服 每日1次 连续使用3天
-                    3. 氨溴索口服液 30mg 口服 每日3次 餐后服用
-                    4. 布洛芬缓释胶囊 300mg 口服 发热时服用 每日不超过3次
-
-                    备注: 如体温持续不退或症状加重，请及时复诊
+                    实验目的：观察二阶系统在不同阻尼比下的超调与调节时间。
+                    实验条件：采样周期 1ms，输入为单位阶跃。
+                    实验步骤：分别设置阻尼比 0.3、0.6、0.9，记录输出曲线指标。
+                    观测结果：阻尼比 0.3 时超调约 38%，阻尼比 0.9 时几乎无超调。
+                    结论：阻尼比增大可降低超调，但响应速度会下降。
                     """).strip()
             }
         ]

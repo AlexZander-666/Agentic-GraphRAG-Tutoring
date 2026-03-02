@@ -51,7 +51,7 @@ export function Landing({ onGetStarted }: LandingProps) {
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--primary-light)] to-blue-50 border border-[var(--primary)]/20 rounded-full shadow-[var(--shadow-sm)]">
             <Sparkles className="w-4 h-4 text-[var(--primary)]" />
             <span className="text-[0.875rem] font-medium text-[var(--primary)] tracking-tight">
-              赋范空间 · 《大模型Agent智能体开发实战》课程产品
+              面向工程课程的可追溯智能导学平台
             </span>
           </div>
         </motion.div>
@@ -169,9 +169,9 @@ export function Landing({ onGetStarted }: LandingProps) {
                 <div className="bg-red-50 border-2 border-red-300 rounded-[var(--radius-md)] px-4 py-2 shadow-[var(--shadow-md)]">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-[0.75rem] font-semibold text-red-700 tracking-tight">混乱难读</span>
+                    <span className="text-[0.75rem] font-semibold text-red-700 tracking-tight">资料分散</span>
                   </div>
-                  <p className="text-[0.625rem] text-red-600 mt-0.5">32 页 • 15,847 字</p>
+                  <p className="text-[0.625rem] text-red-600 mt-0.5">讲义 • 习题 • 学习日志</p>
                 </div>
               </div>
             </div>
@@ -258,11 +258,11 @@ export function Landing({ onGetStarted }: LandingProps) {
             <div className="space-y-4">
               {/* Floating data cards with stagger animation */}
               {[
-                { icon: '👤', label: '人物', value: '王建国', color: 'blue', delay: 0.4 },
-                { icon: '🏢', label: '组织', value: '科技创新发展有限公司', color: 'purple', delay: 0.5 },
-                { icon: '💰', label: '金额', value: '¥500万元', color: 'amber', delay: 0.6 },
-                { icon: '📅', label: '日期', value: '2024年12月24日', color: 'green', delay: 0.7 },
-                { icon: '📍', label: '地点', value: '北京市朝阳区', color: 'pink', delay: 0.8 },
+                { icon: '📘', label: '概念', value: '叠加定理', color: 'blue', delay: 0.4 },
+                { icon: '📐', label: '公式', value: 'G·V = I', color: 'purple', delay: 0.5 },
+                { icon: '✅', label: '适用条件', value: '线性网络', color: 'amber', delay: 0.6 },
+                { icon: '🧮', label: '推导结果', value: '|Z| = 14.14Ω', color: 'green', delay: 0.7 },
+                { icon: '📝', label: '纠正策略', value: '每日 5 题复盘', color: 'pink', delay: 0.8 },
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -324,9 +324,9 @@ export function Landing({ onGetStarted }: LandingProps) {
                 <div className="bg-green-50 border-2 border-green-300 rounded-[var(--radius-md)] px-4 py-2 shadow-[var(--shadow-md)]">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span className="text-[0.75rem] font-semibold text-green-700 tracking-tight">结构清晰</span>
+                    <span className="text-[0.75rem] font-semibold text-green-700 tracking-tight">结构可追溯</span>
                   </div>
-                  <p className="text-[0.625rem] text-green-600 mt-0.5">5 类数据 • 100% 可追溯</p>
+                  <p className="text-[0.625rem] text-green-600 mt-0.5">证据先行 • 双粒度检索</p>
                 </div>
               </div>
             </div>
@@ -342,10 +342,10 @@ export function Landing({ onGetStarted }: LandingProps) {
             transition={{ duration: 0.8, delay: 0.9 }}
           >
             <h1 className="text-[3.5rem] leading-[1.1] tracking-tight mb-6">
-              <span className="text-[var(--foreground)]">使用 AI，让繁杂文档井然有序</span>
+              <span className="text-[var(--foreground)]">让 AI 成为可验证的课程导学助手</span>
             </h1>
             <p className="text-[1.25rem] text-[var(--foreground-muted)] leading-relaxed max-w-2xl mx-auto tracking-tight">
-              可视化拆解 Document Agent 运行原理，从零看懂非结构化数据处理逻辑。
+              先展示证据，再生成答案。围绕教材、习题与学习日志构建可追溯知识图谱。
             </p>
           </motion.div>
 
@@ -376,13 +376,13 @@ export function Landing({ onGetStarted }: LandingProps) {
               
               <Sparkles className="w-6 h-6 relative z-10" />
               <span className="text-[1.125rem] font-semibold tracking-tight relative z-10">
-                体验互动演示
+                进入导学演示
               </span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform relative z-10" />
             </motion.button>
             
             <p className="text-[0.875rem] text-[var(--foreground-muted)] mt-4 tracking-tight">
-              ✓ 体系教学 &nbsp;·&nbsp;  ✓ 本地部署 &nbsp;·&nbsp; ✓ 企业落地
+              ✓ 证据可追溯 &nbsp;·&nbsp; ✓ 教学场景适配 &nbsp;·&nbsp; ✓ 本地可部署
             </p>
           </motion.div>
 
@@ -394,9 +394,9 @@ export function Landing({ onGetStarted }: LandingProps) {
             className="grid md:grid-cols-3 gap-6 pt-12"
           >
             {[
-              { icon: FileText, title: '自动提取', desc: '识别关键实体和数据' },
-              { icon: Database, title: '知识图谱', desc: '可视化关系网络' },
-              { icon: Sparkles, title: '智能问答', desc: '基于证据的回答' },
+              { icon: FileText, title: '结构化抽取', desc: '概念/条件/公式精准抽取' },
+              { icon: Database, title: '双粒度检索', desc: '文档块 + 跨度级证据定位' },
+              { icon: Sparkles, title: '证据优先问答', desc: '先证据后答案，便于验证' },
             ].map((feature, index) => (
               <motion.div
                 key={index}

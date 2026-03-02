@@ -18,6 +18,22 @@ const ENTITY_COLORS: Record<string, { bg: string; text: string; border: string }
   '症状': { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300' },
   '检查项目': { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-300' },
   '手术': { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-300' },
+  '章节': { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300' },
+  '概念': { bg: 'bg-sky-100', text: 'text-sky-800', border: 'border-sky-300' },
+  '定理': { bg: 'bg-violet-100', text: 'text-violet-800', border: 'border-violet-300' },
+  '公式': { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-300' },
+  '适用条件': { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-300' },
+  '结论': { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-300' },
+  '已知条件': { bg: 'bg-slate-100', text: 'text-slate-800', border: 'border-slate-300' },
+  '目标': { bg: 'bg-fuchsia-100', text: 'text-fuchsia-800', border: 'border-fuchsia-300' },
+  '约束条件': { bg: 'bg-lime-100', text: 'text-lime-800', border: 'border-lime-300' },
+  '中间推导': { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-300' },
+  '学习目标': { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-300' },
+  '错误类型': { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-300' },
+  '错误归因': { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-300' },
+  '纠正策略': { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-300' },
+  '掌握度变化': { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300' },
+  '下一步计划': { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-300' },
   'default': { bg: 'bg-gray-100', text: 'text-gray-800', border: 'border-gray-300' },
 };
 
@@ -709,19 +725,19 @@ export function QuestionAnswer({ selectedDocument }: QuestionAnswerProps) {
   // Example questions
   const exampleQuestions = {
     contract: [
-      '合同总金额是多少？',
-      '谁是甲方和乙方？',
-      '支付方式是什么？',
+      '叠加定理的适用条件是什么？',
+      '受控源在等效变换中怎么处理？',
+      '讲义中出现了哪些关键公式？',
     ],
     research: [
-      '海洋污染的主要原因是什么？',
-      '微塑料浓度是多少？',
-      '谁进行了这项研究？',
+      '这道题的已知条件有哪些？',
+      '阻抗幅值是如何推导出来的？',
+      '最终结论及单位是什么？',
     ],
     medical: [
-      '患者的主要诊断是什么？',
-      '推荐使用哪些药物？',
-      '手术风险有哪些？',
+      '本周学习目标是什么？',
+      '主要错误类型有哪些？',
+      '后续改进计划是什么？',
     ],
     'pasted-text': [
       '请总结这段文本的主要内容',
@@ -735,7 +751,7 @@ export function QuestionAnswer({ selectedDocument }: QuestionAnswerProps) {
     ],
     'knowledge-base': [
       '知识库中有哪些文档？',
-      '请介绍一下主要的法律条款',
+      '请总结当前课程的核心知识点',
       '文档中涉及哪些重要概念？',
     ],
   };
@@ -747,68 +763,92 @@ export function QuestionAnswer({ selectedDocument }: QuestionAnswerProps) {
   // Mock citations database
   const getCitationsForQuestion = (questionText: string): Citation[] => {
     const citationMap: Record<string, Citation[]> = {
-      '合同总金额是多少？': [
+      '叠加定理的适用条件是什么？': [
         {
-          text: '合同总金额为人民币500万元整',
-          location: '第五条 合同金额与支付方式',
-          page: 3,
-          paragraph: 2,
+          text: '叠加定理只适用于线性网络。',
+          location: '电路分析课程讲义（节选）',
+          page: 1,
+          paragraph: 6,
           confidence: 0.98,
         },
-        {
-          text: '甲乙双方经友好协商，确定本合同项目总价款为人民币伍佰万元整（¥5,000,000.00）',
-          location: '第五条 第1款',
-          page: 3,
-          paragraph: 3,
-          confidence: 0.96,
-        },
       ],
-      '谁是甲方和乙方？': [
+      '受控源在等效变换中怎么处理？': [
         {
-          text: '甲方：科技创新发展有限公司',
-          location: '合同首部',
+          text: '含受控源电路中，受控源不能直接置零。',
+          location: '电路分析课程讲义（节选）',
           page: 1,
-          paragraph: 1,
-          confidence: 0.99,
-        },
-        {
-          text: '乙方：智能解决方案股份有限公司',
-          location: '合同首部',
-          page: 1,
-          paragraph: 2,
+          paragraph: 7,
           confidence: 0.99,
         },
       ],
-      '海洋污染的主要原因是什么？': [
+      '讲义中出现了哪些关键公式？': [
         {
-          text: '研究表明，海洋污染的主要来源为塑料废弃物和工业排放',
-          location: '第二章 研究背景',
-          page: 2,
-          paragraph: 1,
+          text: '节点方程矩阵形式：G·V = I',
+          location: '电路分析课程讲义（节选）',
+          page: 1,
+          paragraph: 9,
           confidence: 0.94,
         },
         {
-          text: '每年约有800万吨塑料进入海洋环境',
-          location: '第三章 数据分析',
-          page: 4,
-          paragraph: 3,
+          text: '戴维宁等效电压：Vth = Voc',
+          location: '电路分析课程讲义（节选）',
+          page: 1,
+          paragraph: 10,
           confidence: 0.91,
         },
       ],
-      '患者的主要诊断是什么？': [
+      '这道题的已知条件有哪些？': [
         {
-          text: '初步诊断：冠状动脉粥样硬化性心脏病',
-          location: '诊断结论',
-          page: 2,
+          text: 'R=10Ω，L=0.2H，角频率 ω=50rad/s',
+          location: '工程习题讲解记录',
+          page: 1,
           paragraph: 1,
           confidence: 0.97,
         },
+      ],
+      '阻抗幅值是如何推导出来的？': [
         {
-          text: '合并症：高血压病（2级，高危）',
-          location: '诊断结论',
-          page: 2,
-          paragraph: 2,
+          text: '|Z|=√(R²+(ωL)²)，代入得到 |Z|=√(10²+10²)=14.14Ω',
+          location: '工程习题讲解记录',
+          page: 1,
+          paragraph: 6,
           confidence: 0.95,
+        },
+      ],
+      '最终结论及单位是什么？': [
+        {
+          text: '该电路阻抗幅值约为 14.14Ω，相角为 45°。',
+          location: '工程习题讲解记录',
+          page: 1,
+          paragraph: 8,
+          confidence: 0.96,
+        },
+      ],
+      '本周学习目标是什么？': [
+        {
+          text: '本周学习目标：掌握节点电压法与戴维宁等效的使用边界。',
+          location: '学生学习日志',
+          page: 1,
+          paragraph: 2,
+          confidence: 0.98,
+        },
+      ],
+      '主要错误类型有哪些？': [
+        {
+          text: '遗漏了“线性网络”这个适用条件；把受控源错误置零。',
+          location: '学生学习日志',
+          page: 1,
+          paragraph: 4,
+          confidence: 0.95,
+        },
+      ],
+      '后续改进计划是什么？': [
+        {
+          text: '周末完成 2 套综合题，重点训练受控源与等效变换。',
+          location: '学生学习日志',
+          page: 1,
+          paragraph: 10,
+          confidence: 0.94,
         },
       ],
     };
@@ -1167,10 +1207,15 @@ export function QuestionAnswer({ selectedDocument }: QuestionAnswerProps) {
     const citations = getCitationsForQuestion(questionText);
 
     const answerMap: Record<string, string> = {
-      '合同总金额是多少？': '根据合同第五条的约定，本合同项目的总金额为人民币500万元整（¥5,000,000.00）。这是双方经过友好协商后确定的项目总价款。',
-      '谁是甲方和乙方？': '根据合同首部的记载，甲方是科技创新发展有限公司，乙方是智能解决方案股份有限公司。双方均为依法设立并有效存续的企业法人。',
-      '海洋污染的主要原因是什么？': '根据研究报告，海洋污染的主要原因包括塑料废弃物和工业排放。研究数据显示，每年约有800万吨塑料废弃物进入海洋环境，对海洋生态系统造成严重影响。',
-      '患者的主要诊断是什么？': '根据病历记录，患者的主要诊断是冠状动脉粥样硬化性心脏病（冠心病），同时合并有高血压病（2级，高危）。这些诊断是基于临床检查和影像学检查结果综合得出的。',
+      '叠加定理的适用条件是什么？': '根据讲义原文，叠加定理适用于线性网络。也就是说，在解题前需要确认电路满足线性元件与线性关系假设。',
+      '受控源在等效变换中怎么处理？': '讲义明确指出：含受控源电路中，受控源不能直接置零。通常只对独立源做置零处理，再保留受控源参与等效分析。',
+      '讲义中出现了哪些关键公式？': '当前讲义重点公式包括节点方程 G·V = I、戴维宁等效电压 Vth = Voc，以及在满足测量条件时的等效电阻公式 Rth = Voc / Isc。',
+      '这道题的已知条件有哪些？': '题目已知条件是 R=10Ω、L=0.2H、ω=50rad/s，同时默认采用稳态正弦响应与理想线性元件假设。',
+      '阻抗幅值是如何推导出来的？': '先使用公式 |Z|=√(R²+(ωL)²)，再由 ωL=10Ω 代入，可得 |Z|=√(10²+10²)=14.14Ω。',
+      '最终结论及单位是什么？': '最终结论是阻抗幅值约 14.14Ω、相角 45°，其中阻抗单位为 Ω，角度单位为 °。',
+      '本周学习目标是什么？': '学习日志显示本周目标是掌握节点电压法与戴维宁等效的使用边界，重点在“何时能用、何时不能用”。',
+      '主要错误类型有哪些？': '日志里记录的主要错误是遗漏适用条件，以及在含受控源题目中错误置零。',
+      '后续改进计划是什么？': '后续计划是周末完成两套综合题，聚焦受控源与等效变换，并持续用错题复盘巩固。',
     };
 
     const answer = answerMap[questionText] || '抱歉，我在文档中没有找到足够的证据来回答这个问题。请尝试询问文档中明确提到的内容。';

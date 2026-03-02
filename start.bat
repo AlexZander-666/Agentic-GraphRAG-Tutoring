@@ -38,7 +38,7 @@ if not exist .env (
     exit /b 1
 )
 
-start cmd /k "cd /d %~dp0backend && venv\Scripts\activate && uvicorn app.main:app --reload --port 8000"
+start cmd /k "cd /d %~dp0backend && venv\Scripts\activate && uvicorn app.main:app --reload --port 8001"
 
 echo 启动前端服务...
 cd ..\frontend
@@ -52,9 +52,9 @@ start cmd /k "cd /d %~dp0frontend && npm run dev"
 echo.
 echo ============================================
 echo 服务已启动:
-echo   后端: http://localhost:8000
-echo   前端: http://localhost:5173
-echo   API文档: http://localhost:8000/docs
+echo   后端: http://localhost:8001
+echo   前端: http://localhost:13001
+echo   API文档: http://localhost:8001/docs
 echo ============================================
 echo.
 

@@ -31,9 +31,9 @@ class Extractor:
         """获取或创建模型实例"""
         if self._model is None:
             self._model = OpenAILanguageModel(
-                model_id=self.settings.default_model,
-                api_key=self.settings.deepseek_api_key,
-                base_url=self.settings.deepseek_base_url,
+                model_id=self.settings.llm_text_model,
+                api_key=self.settings.llm_api_key,
+                base_url=self.settings.llm_base_url,
             )
         return self._model
 
@@ -127,19 +127,39 @@ class Extractor:
     ) -> Any:
         """执行 LangExtract 提取"""
         model = self._get_model()
+        extract_kwargs = {
+            "text_or_documents": text,
+            "prompt_description": prompt,
+            "examples": examples,
+            "model": model,
+            "fence_output": True,
+            "use_schema_constraints": False,
+            "prompt_validation_level": PromptValidationLevel.OFF,
+            "show_progress": False,
+        }
 
-        result = lx.extract(
-            text_or_documents=text,
-            prompt_description=prompt,
-            examples=examples,
-            model=model,
-            fence_output=True,
-            use_schema_constraints=False,
-            prompt_validation_level=PromptValidationLevel.OFF,
-            show_progress=False,
+        try:
+            return lx.extract(**extract_kwargs)
+        except Exception as e:
+            if not self._is_missing_extractions_key_error(e):
+                raise
+
+            logger.warning(
+                "LangExtract output missing top-level 'extractions' key. "
+                "Retrying with relaxed wrapper requirement."
+            )
+            retry_kwargs = dict(extract_kwargs)
+            retry_kwargs["resolver_params"] = {"require_extractions_key": False}
+            return lx.extract(**retry_kwargs)
+
+    @staticmethod
+    def _is_missing_extractions_key_error(error: Exception) -> bool:
+        """判断是否为 LangExtract 的 wrapper key 校验错误"""
+        message = str(error).lower()
+        return (
+            "must contain an 'extractions' key" in message
+            or "mapping with an 'extractions' key" in message
         )
-
-        return result
 
     def _build_response(
         self,

@@ -24,43 +24,43 @@ const documentMetadata: Record<string, DocumentMetadata> = {
     pageCount: 8,
     wordCount: 3247,
     documentType: 'legal',
-    documentTypeLabel: '法律合同',
+    documentTypeLabel: '教材章节',
   },
   research: {
     pageCount: 12,
     wordCount: 4891,
     documentType: 'research',
-    documentTypeLabel: '科研报告',
+    documentTypeLabel: '工程习题',
   },
   medical: {
     pageCount: 6,
     wordCount: 2634,
     documentType: 'medical',
-    documentTypeLabel: '医疗记录',
+    documentTypeLabel: '学习日志',
   },
 };
 
 const sampleDocuments = [
   {
     id: 'contract',
-    title: '软件许可协议',
-    description: '企业间的法律合同文档',
+    title: '电路教材章节',
+    description: '概念、定理与适用条件讲解',
     type: 'legal',
-    icon: '⚖️',
+    icon: '📘',
   },
   {
     id: 'research',
-    title: '气候变化影响研究',
-    description: '科学研究报告和数据分析',
+    title: '工程习题讲解',
+    description: '已知条件、推导与结论链路',
     type: 'research',
-    icon: '🔬',
+    icon: '🧮',
   },
   {
     id: 'medical',
-    title: '患者治疗方案',
-    description: '医疗记录和诊断文档',
+    title: '学生学习日志',
+    description: '错因复盘与纠正策略追踪',
     type: 'medical',
-    icon: '🏥',
+    icon: '📝',
   },
 ];
 
@@ -76,66 +76,66 @@ const scenarioOptions: {
 }[] = [
   {
     id: 'finance',
-    name: '金融分析',
-    icon: '💰',
+    name: '工程习题',
+    icon: '🧮',
     color: 'text-amber-700',
     bgColor: 'bg-gradient-to-br from-amber-50 to-yellow-100',
     borderColor: 'border-amber-300',
-    description: '财报、投资、风控'
+    description: '条件、约束、推导'
   },
   {
     id: 'medical',
-    name: '医疗病历',
-    icon: '🏥',
+    name: '学习日志',
+    icon: '📝',
     color: 'text-emerald-700',
     bgColor: 'bg-gradient-to-br from-emerald-50 to-green-100',
     borderColor: 'border-emerald-300',
-    description: '病历、诊断、治疗'
+    description: '错因、策略、计划'
   },
   {
     id: 'sales',
-    name: '销售商机',
+    name: '作业批改',
     icon: '📊',
     color: 'text-blue-700',
     bgColor: 'bg-gradient-to-br from-blue-50 to-indigo-100',
     borderColor: 'border-blue-300',
-    description: '商机、客户、转化'
+    description: '得分、失分、建议'
   },
   {
     id: 'customer_service',
-    name: '客服工单',
+    name: '答疑对话',
     icon: '🎧',
     color: 'text-purple-700',
     bgColor: 'bg-gradient-to-br from-purple-50 to-violet-100',
     borderColor: 'border-purple-300',
-    description: '工单、反馈、处理'
+    description: '提问、澄清、行动'
   },
   {
     id: 'news',
-    name: '新闻信息',
-    icon: '📰',
+    name: '课程知识点',
+    icon: '📚',
     color: 'text-sky-700',
     bgColor: 'bg-gradient-to-br from-sky-50 to-cyan-100',
     borderColor: 'border-sky-300',
-    description: '事件、人物、时间'
+    description: '概念、定理、条件'
   },
   {
     id: 'radiology',
-    name: '影像报告',
-    icon: '🩻',
+    name: '课堂讲义',
+    icon: '🧑‍🏫',
     color: 'text-rose-700',
     bgColor: 'bg-gradient-to-br from-rose-50 to-pink-100',
     borderColor: 'border-rose-300',
-    description: 'CT、MRI、X光'
+    description: '章节、定义、推导'
   },
   {
     id: 'medication',
-    name: '药物信息',
-    icon: '💊',
+    name: '实验报告',
+    icon: '🧪',
     color: 'text-teal-700',
     bgColor: 'bg-gradient-to-br from-teal-50 to-cyan-100',
     borderColor: 'border-teal-300',
-    description: '药品、剂量、禁忌'
+    description: '目的、步骤、结论'
   },
 ];
 
@@ -153,8 +153,8 @@ export function DocumentInput({ onNext, selectedDocument, setSelectedDocument }:
   const [pastedText, setPastedText] = useState('');
   const [showMetadata, setShowMetadata] = useState(false);
 
-  // 粘贴文本相关状态 - 默认选择金融分析场景
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioType>('finance');
+  // 粘贴文本相关状态 - 默认选择课程知识点场景
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioType>('news');
   const [isApiHealthy, setIsApiHealthy] = useState(false);
   const [isCheckingApi, setIsCheckingApi] = useState(false);
   const [apiModel, setApiModel] = useState('');
@@ -430,7 +430,7 @@ export function DocumentInput({ onNext, selectedDocument, setSelectedDocument }:
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <label className="text-sm font-semibold text-gray-800">选择提取场景</label>
-                      <span className="text-xs text-gray-500">支持 7 大行业场景</span>
+                      <span className="text-xs text-gray-500">支持 7 类教学场景</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
                       {scenarioOptions.map((scenario) => (
@@ -589,7 +589,7 @@ export function DocumentInput({ onNext, selectedDocument, setSelectedDocument }:
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-4">
                     <label className="text-sm font-semibold text-gray-800">选择提取场景</label>
-                    <span className="text-xs text-gray-500">支持 7 大行业场景</span>
+                    <span className="text-xs text-gray-500">支持 7 类教学场景</span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
                     {scenarioOptions.map((scenario) => (

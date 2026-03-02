@@ -1,75 +1,89 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>知识图谱演示</title>
+  <title>教学知识图谱演示</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      background: linear-gradient(135deg, #154a9c 0%, #1f7a6b 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #fff;
       padding: 20px;
     }
     .container {
-      max-width: 800px;
-      background: rgba(255,255,255,0.1);
+      max-width: 860px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      text-align: center;
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     }
-    h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #fff, #f0f0f0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    h1 { font-size: 34px; margin-bottom: 14px; }
+    p { line-height: 1.7; color: rgba(255, 255, 255, 0.92); }
+    .grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
     }
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-      color: rgba(255,255,255,0.9);
-    }
-    .demo-box {
-      background: rgba(255,255,255,0.2);
+    .item {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
-      padding: 30px;
-      margin-top: 20px;
-    }
-    .feature {
-      display: inline-block;
-      margin: 10px;
-      padding: 10px 20px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 20px;
+      padding: 14px;
       font-size: 14px;
+    }
+    .item strong { display: block; margin-bottom: 8px; }
+    .note {
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🕸️ 知识图谱演示</h1>
-    <p>这是一个静态演示页面示例。你可以在这里展示知识图谱、数据可视化或其他内容。</p>
+    <h1>🕸️ 教学知识图谱演示</h1>
+    <p>
+      该页面用于展示“课程知识点-工程习题-学习日志”三类教学数据如何被组织为可追溯图谱。
+      目标是让学生先看到证据，再理解结论。
+    </p>
 
-    <div class="demo-box">
-      <h2 style="margin-bottom: 15px;">功能特性</h2>
-      <div class="feature">📊 数据可视化</div>
-      <div class="feature">🔍 智能检索</div>
-      <div class="feature">🤖 AI 增强</div>
-      <div class="feature">📈 实时分析</div>
+    <div class="grid">
+      <div class="item">
+        <strong>📘 课程知识点层</strong>
+        抽取概念、定理、公式与适用条件
+      </div>
+      <div class="item">
+        <strong>🧮 工程习题层</strong>
+        对齐“已知-目标-约束-推导-结论”
+      </div>
+      <div class="item">
+        <strong>📝 学习日志层</strong>
+        追踪错因、纠正策略与掌握度变化
+      </div>
+      <div class="item">
+        <strong>📍 双粒度检索</strong>
+        文档块检索 + 字符跨度级证据定位
+      </div>
+      <div class="item">
+        <strong>✅ 证据优先问答</strong>
+        回答前先列出教材支持证据
+      </div>
+      <div class="item">
+        <strong>🔎 可验证反馈</strong>
+        点击引用可回到原文高亮位置
+      </div>
     </div>
 
-    <p style="margin-top: 30px; font-size: 14px; color: rgba(255,255,255,0.7);">
-      提示：你可以替换这个文件的内容为你自己的演示页面
-    </p>
+    <p class="note">你可以将此页面替换为真实的图谱渲染组件或 iframe 嵌入版本。</p>
   </div>
 </body>
 </html>

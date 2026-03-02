@@ -8,13 +8,13 @@ from pydantic import BaseModel, Field
 
 class ScenarioType(str, Enum):
     """场景类型"""
-    RADIOLOGY = "radiology"      # 放射学报告
-    MEDICATION = "medication"    # 药物信息
-    NEWS = "news"                # 新闻信息
-    FINANCE = "finance"          # 金融分析
-    MEDICAL = "medical"          # 医疗病历
-    SALES = "sales"              # 销售商机
-    CUSTOMER_SERVICE = "customer_service"  # 客服工单
+    RADIOLOGY = "radiology"      # 课堂讲义
+    MEDICATION = "medication"    # 实验报告
+    NEWS = "news"                # 课程知识点
+    FINANCE = "finance"          # 工程习题
+    MEDICAL = "medical"          # 学习日志
+    SALES = "sales"              # 作业批改
+    CUSTOMER_SERVICE = "customer_service"  # 答疑对话
     CUSTOM = "custom"            # 自定义
 
 
@@ -33,7 +33,7 @@ class ExtractionItem(BaseModel):
 
 
 class SegmentInfo(BaseModel):
-    """段落信息 (用于放射学报告等分段场景)"""
+    """段落信息（用于讲义/实验等分段场景）"""
     type: str = Field(..., description="段落类型")
     label: Optional[str] = Field(default=None, description="段落标签")
     content: str = Field(..., description="段落内容")
@@ -50,7 +50,7 @@ class ExtractionRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "text": "患者李明，男，58岁，CT检查发现肺部结节...",
+                "text": "叠加定理适用于线性网络，多个独立电源共同作用的响应可代数相加。",
                 "scenario": "radiology",
                 "use_cache": True
             }
@@ -148,7 +148,7 @@ class SearchRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "query": "民间借贷利率",
+                "query": "叠加定理 适用条件",
                 "top_k": 5
             }
         }
@@ -188,11 +188,11 @@ class QARequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "question": "什么是民间借贷的利率上限？",
+                "question": "叠加定理在什么条件下成立？",
                 "top_k": 5,
                 "entities": [
-                    {"text": "民间借贷", "entity_type": "法律概念"},
-                    {"text": "利率上限", "entity_type": "法律术语"}
+                    {"text": "叠加定理", "entity_type": "定理"},
+                    {"text": "线性网络", "entity_type": "适用条件"}
                 ]
             }
         }
@@ -242,7 +242,7 @@ class ChatRequest(BaseModel):
         json_schema_extra = {
             "example": {
                 "messages": [
-                    {"role": "user", "content": "请介绍一下劳动合同法的相关规定"}
+                    {"role": "user", "content": "请总结本章关于节点电压法的核心步骤"}
                 ],
                 "use_rag": True,
                 "top_k": 5
@@ -283,7 +283,7 @@ class AddDocumentRequest(BaseModel):
             "example": {
                 "title": "示例文档",
                 "content": "这是文档的内容...",
-                "metadata": {"source": "manual", "type": "legal"}
+                "metadata": {"source": "manual", "type": "teaching_note"}
             }
         }
 
@@ -305,19 +305,19 @@ class AddExtractionsRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "doc_title": "中医药研究报告",
+                "doc_title": "电路课程知识提取",
                 "extractions": [
                     {
-                        "extraction_class": "实体",
-                        "extraction_text": "丹参",
+                        "extraction_class": "概念",
+                        "extraction_text": "叠加定理",
                         "char_interval": {"start_pos": 100, "end_pos": 102},
-                        "attributes": {"类型": "中药", "功效": "活血化瘀"}
+                        "attributes": {"章节": "第4章", "用途": "线性电路分析"}
                     },
                     {
-                        "extraction_class": "关系描述",
-                        "extraction_text": "丹参能够抑制肝星状细胞活化",
+                        "extraction_class": "适用条件",
+                        "extraction_text": "适用于线性网络",
                         "char_interval": {"start_pos": 200, "end_pos": 215},
-                        "attributes": {"类型": "作用机制", "主体1": "丹参", "关系": "抑制", "主体2": "肝星状细胞"}
+                        "attributes": {"关联对象": "叠加定理"}
                     }
                 ]
             }

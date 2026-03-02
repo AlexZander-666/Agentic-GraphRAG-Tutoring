@@ -23,8 +23,8 @@ NC='\033[0m' # No Color
 
 # 项目配置
 CONDA_ENV_NAME="langextract"
-BACKEND_PORT=8000
-FRONTEND_PORT=3000
+BACKEND_PORT=8001
+FRONTEND_PORT=13001
 
 # 获取脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

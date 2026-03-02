@@ -35,7 +35,7 @@ async def health_check(settings: Settings = Depends(get_settings)):
     return HealthResponse(
         status="ok",
         version="0.1.0",
-        model=settings.default_model
+        model=settings.llm_text_model
     )
 
 
@@ -98,7 +98,7 @@ async def extract_text(
     执行文本提取
 
     - **text**: 输入文本
-    - **scenario**: 场景类型 (radiology/medication/news)
+    - **scenario**: 场景类型（课堂讲义、实验报告、课程知识点、工程习题、学习日志、作业批改、答疑对话）
     - **use_cache**: 是否使用缓存
     """
     # 验证输入

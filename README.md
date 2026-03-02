@@ -64,7 +64,7 @@ copy .env.example .env
 # 编辑 .env 填入 DEEPSEEK_API_KEY
 
 # 启动服务
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8001
 ```
 
 ### 前端启动
@@ -77,7 +77,7 @@ npm run dev
 
 ## API 文档
 
-启动后端后访问: http://localhost:8000/docs
+启动后端后访问: http://localhost:8001/docs
 
 ## 技术栈
 

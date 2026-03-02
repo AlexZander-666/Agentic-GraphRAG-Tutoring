@@ -8,7 +8,7 @@ from dataclasses import dataclass, field, asdict
 
 import chromadb
 from chromadb.config import Settings
-from langchain_openai import OpenAIEmbeddings
+from app.utils.embedding_provider import build_openai_embeddings
 
 logger = logging.getLogger(__name__)
 
@@ -73,19 +73,28 @@ class ChromaVectorStore:
             "DASHSCOPE_BASE_URL",
             "https://dashscope.aliyuncs.com/compatible-mode/v1"
         )
+        self.fallback_embedding_api_key = os.getenv("SILICONFLOW_API_KEY", "")
+        self.fallback_embedding_base_url = os.getenv(
+            "SILICONFLOW_API_BASE",
+            "https://api.siliconflow.cn/v1"
+        )
+        self.fallback_embedding_model = os.getenv(
+            "SILICONFLOW_EMBEDDING_MODEL",
+            "BAAI/bge-m3"
+        )
 
         # 初始化 Embeddings
-        if not self.embedding_api_key:
-            raise ValueError("未配置 DASHSCOPE_API_KEY，无法初始化 Embeddings")
-
-        self.embeddings = OpenAIEmbeddings(
-            model=self.embedding_model,
-            api_key=self.embedding_api_key,
-            base_url=self.embedding_base_url,
-            check_embedding_ctx_length=False,
-            chunk_size=10,  # 阿里云百炼限制批量大小不超过 10
+        self.embeddings, self.embedding_model, self.embedding_base_url = build_openai_embeddings(
+            primary_model=self.embedding_model,
+            primary_api_key=self.embedding_api_key,
+            primary_base_url=self.embedding_base_url,
+            fallback_api_key=self.fallback_embedding_api_key,
+            fallback_base_url=self.fallback_embedding_base_url,
+            fallback_model=self.fallback_embedding_model,
         )
-        logger.info(f"使用嵌入模型: {self.embedding_model}")
+        logger.info(
+            f"使用嵌入模型: {self.embedding_model} @ {self.embedding_base_url}"
+        )
 
         # 确保持久化目录存在
         os.makedirs(self.persist_directory, exist_ok=True)

@@ -1,4 +1,4 @@
-"""销售信息提取场景"""
+"""作业批改提取场景"""
 
 import textwrap
 from typing import Dict, List
@@ -9,75 +9,64 @@ from app.scenarios.base import BaseScenario
 
 
 class SalesScenario(BaseScenario):
-    """销售信息提取场景"""
+    """作业批改提取场景（保留 sales 场景 ID 以兼容现有接口）"""
 
-    name = "销售商机"
-    description = "从销售报告、客户沟通记录、商务合同中提取关键业务信息，包括客户、产品、金额、需求等"
-    extract_classes = ["客户", "产品", "金额", "时间", "数量", "需求", "竞争对手", "跟进状态"]
+    name = "作业批改"
+    description = "从作业题目、学生答案和教师批注中提取评分证据与反馈建议，用于教学导学"
+    extract_classes = ["题号", "学生答案", "标准答案", "得分点", "失分点", "反馈建议", "引用证据"]
 
     def get_prompt(self) -> str:
         return textwrap.dedent("""\
-            从销售文本中提取以下信息:
+            从作业批改文本中提取以下信息:
 
-            - 客户: 客户公司名称、联系人姓名、联系方式
-            - 产品: 产品名称、型号规格、服务内容
-            - 金额: 订单金额、报价、预算、折扣等（保留单位）
-            - 时间: 签约日期、交付时间、跟进时间
-            - 数量: 采购数量、库存数量
-            - 需求: 客户需求描述、痛点问题
-            - 竞争对手: 竞品公司、竞品报价
-            - 跟进状态: 商机阶段、签约概率、下一步行动
+            - 题号: 题目编号
+            - 学生答案: 学生原始作答内容
+            - 标准答案: 标准解法或参考结论
+            - 得分点: 学生答对的关键点
+            - 失分点: 学生存在的问题
+            - 反馈建议: 可执行改进建议
+            - 引用证据: 用于支持判分的原文片段
 
             要求:
-            1. extraction_text 必须是原文的精确子串，不要改写或总结
-            2. 为客户添加联系人和联系方式属性
-            3. 为金额添加类型属性（如：报价、预算、成交价）
-            4. 为竞争对手添加其报价或优劣势属性
-            5. 为跟进状态添加概率和时间属性
-            6. 按照在文本中出现的顺序提取
+            1. extraction_text 必须是原文精确子串
+            2. 得分点和失分点要与题号关联
+            3. 不补充原文没有的评分结论
+            4. 按原文顺序抽取
             """)
 
     def get_examples(self) -> List[lx.data.ExampleData]:
-        example_text = "客户：华为技术有限公司，联系人张经理（139****8888）。采购需求：服务器100台，预算500万元。竞争对手：戴尔报价480万。我方报价520万，预计下周签约，概率70%。"
+        example_text = (
+            "第3题：学生答案写出 KCL 方程但符号方向错误。批注：列式思路正确，电流方向统一后可得满分。"
+        )
 
         return [
             lx.data.ExampleData(
                 text=example_text,
                 extractions=[
                     lx.data.Extraction(
-                        extraction_class="客户",
-                        extraction_text="华为技术有限公司",
-                        attributes={"联系人": "张经理", "电话": "139****8888"}
+                        extraction_class="题号",
+                        extraction_text="第3题",
+                        attributes={"类型": "电路分析"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="产品",
-                        extraction_text="服务器",
-                        attributes={"类型": "硬件设备"}
+                        extraction_class="学生答案",
+                        extraction_text="写出 KCL 方程但符号方向错误",
+                        attributes={"题号": "第3题"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="数量",
-                        extraction_text="100台",
-                        attributes={"产品": "服务器"}
+                        extraction_class="得分点",
+                        extraction_text="列式思路正确",
+                        attributes={"题号": "第3题"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="金额",
-                        extraction_text="500万元",
-                        attributes={"类型": "预算"}
+                        extraction_class="失分点",
+                        extraction_text="符号方向错误",
+                        attributes={"题号": "第3题"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="竞争对手",
-                        extraction_text="戴尔",
-                        attributes={"报价": "480万"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="金额",
-                        extraction_text="520万",
-                        attributes={"类型": "我方报价"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="跟进状态",
-                        extraction_text="预计下周签约",
-                        attributes={"概率": "70%", "阶段": "商务谈判"}
+                        extraction_class="反馈建议",
+                        extraction_text="电流方向统一后可得满分",
+                        attributes={"题号": "第3题"}
                     ),
                 ]
             )
@@ -86,61 +75,27 @@ class SalesScenario(BaseScenario):
     def get_samples(self) -> List[Dict[str, str]]:
         return [
             {
-                "id": "sales_sample_1",
-                "title": "大客户销售周报",
+                "id": "grading_sample_1",
+                "title": "电路作业批改记录",
                 "text": textwrap.dedent("""\
-                    销售周报 | 2024年第51周
-                    汇报人：华东区大客户经理 陈志远
+                    第1题（10分）：学生正确写出戴维宁等效电阻计算步骤，得分点完整，得 10 分。
+                    第2题（12分）：学生答案中将电流源置零处理错误，失分点为“未区分独立源与受控源”，得 7 分。
 
-                    【商机1】中国银行数据中心服务器采购项目
-                    客户信息：中国银行股份有限公司信息科技部
-                    客户联系人：IT采购总监 周明华（139****8890）
-                    项目预算：4500万元
-                    我方报价：4280万元（含三年运维服务）
-                    主要竞争对手：华为（报价4150万）、浪潮（报价4050万）
-                    采购内容：高性能服务器200台，存储设备50套
-                    项目阶段：技术评标已通过，进入商务谈判
-                    本周进展：12月18日与客户CFO王建国进行了价格沟通，客户希望总价控制在4000万以内
-                    下一步行动：申请5%额外折扣授权，预计12月28日前完成签约
-                    签约概率：75%
+                    教师反馈建议：
+                    1. 先检查题目是否含受控源，再决定等效处理方式；
+                    2. 每步推导后标注单位，避免后续计算混乱。
 
-                    【商机2】比亚迪汽车智能制造MES系统
-                    客户信息：比亚迪股份有限公司深圳坪山工厂
-                    客户联系人：智能制造部经理 李工（电话：186****2345）
-                    项目预算：1200万元
-                    我方报价：980万元
-                    采购内容：生产执行系统（MES）软件许可500点
-                    本周进展：12月19日进行了现场需求调研，发现客户核心痛点是产线数据孤岛问题
-                    竞争对手：西门子（已提交方案）、Rockwell
-                    签约概率：60%
+                    引用证据：教材第4章“含受控源电路的等效变换”明确指出受控源不能直接置零。
                     """).strip()
             },
             {
-                "id": "sales_sample_2",
-                "title": "渠道合作协议",
+                "id": "grading_sample_2",
+                "title": "控制课程作业批注",
                 "text": textwrap.dedent("""\
-                    战略渠道合作协议
-                    协议编号：CH-2024-SH-0892
-                    签约日期：2024年12月20日
-
-                    甲方（供应商）：深圳市云智科技有限公司
-                    联系人：渠道总监 王芳（电话：0755-8888****）
-
-                    乙方（渠道商）：上海数通信息技术有限公司
-                    联系人：采购经理 赵丽（电话：021-5050****）
-
-                    合作产品：云智企业协同办公平台V5.0
-                    授权区域：上海市、江苏省、浙江省
-                    授权级别：金牌代理商
-                    合作期限：2025年1月1日至2025年12月31日
-
-                    销售目标及返点：年销售额1000万以上，返点22%，额外年终奖励15万
-
-                    首批采购订单：
-                    产品：云智企业版 100套
-                    单价：3.8万元/套
-                    总金额：380万元（含税）
-                    交货时间：2025年1月15日前
+                    第5题：学生使用终值定理求稳态误差，方法正确。
+                    失分点：未验证闭环系统稳定性就直接套用终值定理。
+                    标准答案要求先判稳，再计算误差系数。
+                    反馈建议：今后按“判稳-建模-代入”三步作答。
                     """).strip()
             }
         ]

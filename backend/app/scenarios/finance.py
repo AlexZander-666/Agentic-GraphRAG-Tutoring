@@ -1,4 +1,4 @@
-"""金融信息提取场景"""
+"""工程习题提取场景"""
 
 import textwrap
 from typing import Dict, List
@@ -9,74 +9,70 @@ from app.scenarios.base import BaseScenario
 
 
 class FinanceScenario(BaseScenario):
-    """金融信息提取场景"""
+    """工程习题提取场景（保留 finance 场景 ID 以兼容现有接口）"""
 
-    name = "金融分析"
-    description = "从金融报告、投资分析、交易记录中提取结构化信息，包括机构、人物、金额、指标、事件等"
-    extract_classes = ["机构", "人物", "金额", "时间", "事件", "指标", "产品"]
+    name = "工程习题"
+    description = "从工程课程题目与解题过程文本中提取已知条件、目标、约束条件、公式和结论，支撑教学导学"
+    extract_classes = ["已知条件", "目标", "约束条件", "公式", "中间推导", "结论"]
 
     def get_prompt(self) -> str:
         return textwrap.dedent("""\
-            从金融文本中提取以下信息:
+            从工程习题文本中提取以下信息:
 
-            - 机构: 金融机构、公司、投资基金、监管部门等组织名称
-            - 人物: 高管、分析师、投资人等人名及其职位
-            - 金额: 投资额、收益、估值、融资额等金融数字（保留单位）
-            - 时间: 交易日期、报告期间、发布时间等
-            - 事件: 融资、并购、上市、发布会等重要事件
-            - 指标: 财务指标、增长率、市盈率、市值等数据
-            - 产品: 金融产品、基金、股票代码、理财产品等
+            - 已知条件: 题目给定的数值、参数、初始状态
+            - 目标: 需要求解或证明的对象
+            - 约束条件: 适用范围、边界条件、理想化假设
+            - 公式: 解题中使用的计算式
+            - 中间推导: 关键代换与推导结果
+            - 结论: 最终答案及其单位/条件
 
             要求:
-            1. extraction_text 必须是原文的精确子串，不要改写或总结
-            2. 金额必须保留原文的单位（如：亿元、万美元）
-            3. 为人物添加职位和所属机构属性
-            4. 为指标添加类型属性（如：增长率、估值、收益等）
-            5. 为事件添加类型属性（如：融资、并购、发布等）
-            6. 按照在文本中出现的顺序提取
+            1. extraction_text 必须是原文精确子串，不得改写
+            2. 保留所有数字、符号与单位
+            3. 为公式标注用途（如“求阻抗”“求稳态误差”）
+            4. 为结论标注是否满足约束条件（若原文给出）
+            5. 按原文顺序抽取，避免重复
             """)
 
     def get_examples(self) -> List[lx.data.ExampleData]:
-        example_text = "2024年12月15日，红杉资本中国宣布完成对AI初创公司智谱科技的B轮投资，投资金额达5亿美元。智谱科技CEO王小川表示，公司估值已达50亿美元。"
+        example_text = (
+            "已知 R=10Ω，L=0.2H，角频率 ω=50rad/s，求串联 RL 电路的阻抗幅值。"
+            "由公式 |Z|=√(R²+(ωL)²) 得 |Z|≈14.14Ω。"
+        )
 
         return [
             lx.data.ExampleData(
                 text=example_text,
                 extractions=[
                     lx.data.Extraction(
-                        extraction_class="时间",
-                        extraction_text="2024年12月15日",
-                        attributes={"类型": "具体日期"}
+                        extraction_class="已知条件",
+                        extraction_text="R=10Ω",
+                        attributes={"类型": "电阻"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="机构",
-                        extraction_text="红杉资本中国",
-                        attributes={"类型": "投资机构"}
+                        extraction_class="已知条件",
+                        extraction_text="L=0.2H",
+                        attributes={"类型": "电感"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="机构",
-                        extraction_text="智谱科技",
-                        attributes={"类型": "AI公司", "轮次": "B轮"}
+                        extraction_class="已知条件",
+                        extraction_text="ω=50rad/s",
+                        attributes={"类型": "角频率"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="事件",
-                        extraction_text="B轮投资",
-                        attributes={"类型": "融资", "参与方": "红杉资本中国"}
+                        extraction_class="目标",
+                        extraction_text="求串联 RL 电路的阻抗幅值",
+                        attributes={"章节": "交流电路"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="金额",
-                        extraction_text="5亿美元",
-                        attributes={"类型": "投资金额"}
+                        extraction_class="公式",
+                        extraction_text="|Z|=√(R²+(ωL)²)",
+                        attributes={"用途": "求阻抗幅值"}
                     ),
                     lx.data.Extraction(
-                        extraction_class="人物",
-                        extraction_text="王小川",
-                        attributes={"职位": "CEO", "所属机构": "智谱科技"}
-                    ),
-                    lx.data.Extraction(
-                        extraction_class="指标",
-                        extraction_text="50亿美元",
-                        attributes={"类型": "估值"}
+                        extraction_class="结论",
+                        extraction_text="|Z|≈14.14Ω",
+                        attributes={"单位": "Ω"}
                     ),
                 ]
             )
@@ -85,25 +81,28 @@ class FinanceScenario(BaseScenario):
     def get_samples(self) -> List[Dict[str, str]]:
         return [
             {
-                "id": "finance_sample_1",
-                "title": "投资并购报告",
+                "id": "exercise_sample_1",
+                "title": "电路分析计算题",
                 "text": textwrap.dedent("""\
-                    2024年12月15日，普华永道发布的《2024年中国金融科技投资报告》显示，今年前三季度，中国金融科技领域共发生投融资事件287起，总金额达到652亿元人民币，同比增长23.5%。
+                    已知一阶 RC 电路中 R=2kΩ，C=50μF，输入电压为阶跃信号 10V。
+                    设初始电容电压为 0V，求 t=0.1s 时电容电压 vc(t)。
 
-                    报告指出，蚂蚁集团以2850亿美元估值位居榜首，其次是京东科技（456亿美元）和微众银行（380亿美元）。值得注意的是，红杉资本中国基金在本季度参与了15笔交易，累计投资金额超过80亿元。
+                    约束条件：采用理想元件模型，忽略寄生参数与温度漂移。
+                    已知公式 vc(t)=V(1-e^(-t/RC))，其中时间常数 τ=RC。
 
-                    在具体案例方面，10月18日，总部位于上海浦东的数字支付公司「连连数字」宣布完成D轮融资，融资金额达12.8亿元人民币。本轮融资由高瓴资本领投，老股东IDG资本、光速中国跟投。连连数字CEO朱晓松表示，本轮融资将主要用于跨境支付技术研发和东南亚市场拓展。
+                    代入可得 τ=0.1s，故 vc(0.1)=10(1-e^-1)≈6.32V。
                     """).strip()
             },
             {
-                "id": "finance_sample_2",
-                "title": "季度财报分析",
+                "id": "exercise_sample_2",
+                "title": "自动控制稳态误差题",
                 "text": textwrap.dedent("""\
-                    腾讯控股（0700.HK）于2024年11月13日晚间发布2024年第三季度财报。报告显示，公司实现营业收入1672亿元，同比增长8.2%；净利润532亿元，同比大涨54%，超出市场预期的485亿元。
+                    已知单位负反馈系统开环传递函数 G(s)=K/(s(s+2))，取 K=20。
+                    求单位斜坡输入下系统稳态误差。
 
-                    财务总监罗硕瀚在业绩电话会上解读称，本季度业绩增长主要得益于视频号广告收入的爆发式增长（同比+80%）以及游戏业务的企稳回升。瑞银分析师刘源在研报中将腾讯目标价从420港元上调至480港元，维持「买入」评级。
-
-                    受财报利好刺激，腾讯股价次日大涨6.8%，收于398.6港元，市值重返3.8万亿港元。
+                    约束条件：系统闭环稳定且输入信号为 r(t)=t。
+                    速度误差系数 Kv=lim(s->0) sG(s)=10。
+                    因此稳态误差 ess=1/Kv=0.1。
                     """).strip()
             }
         ]

@@ -14,6 +14,11 @@ class Settings(BaseSettings):
     deepseek_base_url: str = "https://api.deepseek.com"
     default_model: str = "deepseek-chat"
 
+    # SiliconFlow DeepSeek 配置（可选）
+    siliconflow_api_key: str = ""
+    siliconflow_api_base: str = "https://api.siliconflow.cn/v1"
+    siliconflow_text_model: str = "deepseek-ai/DeepSeek-V3.2"
+
     # MinerU API 配置 (PDF 解析)
     mineru_api_key: str = ""
 
@@ -32,11 +37,11 @@ class Settings(BaseSettings):
 
     # 服务器配置
     host: str = "0.0.0.0"
-    port: int = 8000
+    port: int = 8001
     debug: bool = True
 
     # CORS 配置
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://localhost:5173,http://localhost:13001"
 
     # 缓存配置
     cache_enabled: bool = True
@@ -53,6 +58,25 @@ class Settings(BaseSettings):
     def cors_origins_list(self) -> List[str]:
         """返回 CORS 源列表"""
         return [origin.strip() for origin in self.cors_origins.split(",")]
+
+    @property
+    def llm_api_key(self) -> str:
+        """统一的文本模型 API Key（优先 SiliconFlow）"""
+        return self.siliconflow_api_key or self.deepseek_api_key
+
+    @property
+    def llm_base_url(self) -> str:
+        """统一的文本模型 Base URL（优先 SiliconFlow）"""
+        if self.siliconflow_api_key:
+            return self.siliconflow_api_base
+        return self.deepseek_base_url
+
+    @property
+    def llm_text_model(self) -> str:
+        """统一的文本模型名称（优先 SiliconFlow）"""
+        if self.siliconflow_api_key:
+            return self.siliconflow_text_model
+        return self.default_model
 
     class Config:
         env_file = ".env"

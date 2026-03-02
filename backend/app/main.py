@@ -22,12 +22,12 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """应用生命周期管理"""
     settings = get_settings()
-    logger.info(f"Starting LangExtractApp with model: {settings.default_model}")
-    logger.info(f"API endpoint: {settings.deepseek_base_url}")
+    logger.info(f"Starting LangExtractApp with model: {settings.llm_text_model}")
+    logger.info(f"API endpoint: {settings.llm_base_url}")
 
     # 检查 API Key
-    if not settings.deepseek_api_key:
-        logger.warning("DEEPSEEK_API_KEY not set!")
+    if not settings.llm_api_key:
+        logger.warning("Neither SILICONFLOW_API_KEY nor DEEPSEEK_API_KEY is set!")
 
     yield
 

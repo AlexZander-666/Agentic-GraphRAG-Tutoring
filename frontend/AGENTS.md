@@ -11,7 +11,7 @@ This frontend is a Vite + React (TSX) app rooted in `frontend/`.
 
 ## Build, Test, and Development Commands
 - `npm install`: install dependencies.
-- `npm run dev`: start local dev server on port `3000` (configured in `vite.config.ts`).
+- `npm run dev`: start local dev server on port `13001` (configured in `vite.config.ts`).
 - `npm run build`: create production bundle in `build/`.
 - `npx vite preview --port 4173`: preview the production build locally.
 
@@ -40,5 +40,5 @@ PRs should include:
 - commands run (at minimum `npm run build`) and results.
 
 ## Security & Configuration Tips
-- API base URL resolves from `VITE_API_BASE_URL`, otherwise defaults to `http://<hostname>:8000/api`.
+- API base URL resolves from `VITE_API_BASE_URL`, otherwise defaults to `http://<hostname>:8001/api`.
 - Never commit secrets or environment-specific endpoints in source files.

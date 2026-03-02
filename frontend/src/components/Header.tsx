@@ -22,7 +22,7 @@ export function Header({ onToggleInteractive, isInteractive }: HeaderProps) {
             </div>
             <div>
               <h1 className="text-[1rem] font-semibold text-[var(--foreground)] tracking-tight">
-                垂直领域 Agentic-GraphRAG 检索引擎
+                教学垂直智能导学系统
               </h1>
               <p className="text-[0.75rem] text-[var(--foreground-muted)] mt-0.5 tracking-tight">
                 {isInteractive ? '交互式教学模式' : '智能问答模式'}

@@ -35,12 +35,12 @@ class QAAgent:
         self.vector_store = vector_store
 
         # 从环境变量获取配置
-        self.model = model or os.getenv("DEFAULT_MODEL", "deepseek-chat")
-        self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY", "")
-        self.base_url = base_url or os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+        self.model = model or os.getenv("SILICONFLOW_TEXT_MODEL") or os.getenv("DEFAULT_MODEL", "deepseek-chat")
+        self.api_key = api_key or os.getenv("SILICONFLOW_API_KEY") or os.getenv("DEEPSEEK_API_KEY", "")
+        self.base_url = base_url or os.getenv("SILICONFLOW_API_BASE") or os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 
         if not self.api_key:
-            raise ValueError("未配置 DEEPSEEK_API_KEY")
+            raise ValueError("未配置 SILICONFLOW_API_KEY 或 DEEPSEEK_API_KEY")
 
         # 初始化 LLM
         self.llm = ChatOpenAI(

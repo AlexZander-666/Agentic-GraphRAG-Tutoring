@@ -1,101 +1,151 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>查询演示</title>
+  <title>教学问答演示</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #1a1a2e;
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      background: #0f2037;
       min-height: 100vh;
       padding: 40px 20px;
-      color: white;
+      color: #fff;
     }
     .container {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
     }
     h1 {
       font-size: 32px;
-      margin-bottom: 30px;
-      color: #00d4ff;
+      margin-bottom: 24px;
       text-align: center;
+      color: #7ee8fa;
     }
     .query-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(0,212,255,0.3);
-      border-radius: 12px;
-      padding: 30px;
-      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(126, 232, 250, 0.4);
+      border-radius: 14px;
+      padding: 24px;
     }
     input[type="text"] {
       width: 100%;
-      padding: 15px;
-      border: 1px solid rgba(0,212,255,0.5);
+      padding: 14px;
+      border: 1px solid rgba(126, 232, 250, 0.6);
       border-radius: 8px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.08);
       color: white;
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #00d4ff;
+      font-size: 15px;
+      margin-bottom: 12px;
     }
     button {
       width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 13px;
+      background: linear-gradient(135deg, #1f7a6b, #2a9d8f);
       border: none;
       border-radius: 8px;
       color: white;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s;
     }
-    button:hover {
-      transform: translateY(-2px);
+    .suggestions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      padding: 6px 10px;
+      border: 1px solid rgba(126, 232, 250, 0.5);
+      border-radius: 999px;
+      background: rgba(126, 232, 250, 0.12);
+      font-size: 12px;
+      cursor: pointer;
     }
     .result {
-      background: rgba(0,255,136,0.1);
-      border: 1px solid rgba(0,255,136,0.3);
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
+      background: rgba(46, 204, 113, 0.12);
+      border: 1px solid rgba(46, 204, 113, 0.45);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
       display: none;
+    }
+    .evidence {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🔍 智能查询演示</h1>
+    <h1>🔍 教学导学问答演示</h1>
 
     <div class="query-box">
-      <input type="text" id="queryInput" placeholder="输入你的查询...">
-      <button onclick="executeQuery()">执行查询</button>
+      <input type="text" id="queryInput" placeholder="例如：叠加定理的适用条件是什么？">
+      <button onclick="executeQuery()">执行教学问答</button>
+
+      <div class="suggestions">
+        <span class="chip" onclick="setQ('叠加定理的适用条件是什么？')">叠加定理条件</span>
+        <span class="chip" onclick="setQ('这道题的已知条件有哪些？')">习题已知条件</span>
+        <span class="chip" onclick="setQ('学习日志中的主要错因是什么？')">学习错因分析</span>
+      </div>
 
       <div class="result" id="result">
-        <h3 style="color: #00ff88; margin-bottom: 10px;">查询结果</h3>
+        <h3 style="margin-bottom: 8px;">回答</h3>
         <p id="resultText"></p>
+        <div class="evidence" id="evidenceText"></div>
       </div>
     </div>
   </div>
 
   <script>
+    const kb = {
+      '叠加定理的适用条件是什么？': {
+        answer: '叠加定理适用于线性网络，且分析对象通常是电压或电流响应。',
+        evidence: '证据：教材第4章写明“叠加定理只适用于线性网络”。'
+      },
+      '这道题的已知条件有哪些？': {
+        answer: '当前示例习题的已知条件为 R=10Ω、L=0.2H、ω=50rad/s。',
+        evidence: '证据：习题原文“已知串联 RL 电路中 R=10Ω，L=0.2H，角频率 ω=50rad/s”。'
+      },
+      '学习日志中的主要错因是什么？': {
+        answer: '主要错因是忽略适用条件检查，以及含受控源时错误置零。',
+        evidence: '证据：学习日志“遗漏线性网络条件”“把受控源错误置零”。'
+      }
+    };
+
+    function setQ(v) {
+      document.getElementById('queryInput').value = v;
+      executeQuery();
+    }
+
     function executeQuery() {
-      const input = document.getElementById('queryInput').value;
+      const input = document.getElementById('queryInput').value.trim();
       const result = document.getElementById('result');
       const resultText = document.getElementById('resultText');
+      const evidenceText = document.getElementById('evidenceText');
 
-      if (input.trim()) {
-        resultText.textContent = `查询 "${input}" 的结果将在这里显示。这是一个演示页面，你可以集成真实的 API 调用。`;
-        result.style.display = 'block';
-      } else {
-        alert('请输入查询内容');
+      if (!input) {
+        alert('请输入问题');
+        return;
       }
+
+      const hit = kb[input];
+      if (hit) {
+        resultText.textContent = hit.answer;
+        evidenceText.textContent = hit.evidence;
+      } else {
+        resultText.textContent = `问题“${input}”的演示回答：请先定位教材证据，再输出结论。`;
+        evidenceText.textContent = '证据：该问题未命中预置示例，实际系统会走检索 + 引用链路。';
+      }
+
+      result.style.display = 'block';
     }
   </script>
 </body>

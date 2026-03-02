@@ -9,7 +9,7 @@ const getApiBaseUrl = () => {
 
   // 自动使用当前访问的 hostname + 后端端口
   const hostname = window.location.hostname;
-  return `http://${hostname}:8000/api`;
+  return `http://${hostname}:8001/api`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
